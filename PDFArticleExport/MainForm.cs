@@ -69,13 +69,23 @@ namespace PDFArticleExport
                 {
                     toolStripStatusLabel1.Text = "Hiding headers...";
 
-                    foreach (Style sty in wordDocument.Styles)
+                    wordDocument.Styles["_header"].Font.Color = WdColor.wdColorWhite;
+
+                    foreach (HeaderFooter hf in wordDocument.Sections[1].Headers)
                     {
-                        if (sty.NameLocal == "_header")
+                        if (hf.IsHeader)
                         {
-                            sty.Font.Color = WdColor.wdColorWhite;
+                            foreach (Range r in hf.Range.Sentences)
+                            {
+                                if (r.Text.IndexOf("Do Not Delete") >= 0)
+                                {
+                                    r.Select();
+                                    wordApplication.Selection.ClearCharacterDirectFormatting();
+                                }
+                            }
                         }
                     }
+
                     toolStripStatusLabel1.Text = "Exporting to PDF...";
                     wordDocument.ExportAsFixedFormat(paramExportFilePath,
                         paramExportFormat, paramOpenAfterExport,
