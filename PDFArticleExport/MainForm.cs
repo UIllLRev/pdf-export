@@ -18,11 +18,19 @@ namespace PDFArticleExport
             dlg.DefaultExt = ".docx";
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                // TODO: make more robust
-                DocxToPdf(dlg.FileName, dlg.FileName.Replace(".docx", ".pdf"));
+                string outName = dlg.FileName;
+
+                if (outName.EndsWith(".docx"))
+                {
+                    outName = outName.Remove(outName.Length - 5);
+                }
+
+                outName = outName + ".pdf";
+                DocxToPdf(dlg.FileName, outName);
             }
         }
-            private void DocxToPdf(String sourcePath, String destPath)
+
+        private void DocxToPdf(String sourcePath, String destPath)
         {
 
             //Change the path of the .docx file and filename to your file name.
@@ -121,11 +129,6 @@ namespace PDFArticleExport
                         ref paramMissing);
                     wordApplication = null;
                 }
-
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
             }
         }
     }
